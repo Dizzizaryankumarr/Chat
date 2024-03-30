@@ -1,0 +1,223 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Welcome</title>
+<style>
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 0;
+  }
+  .container {
+    max-width: 90%;
+    margin: 20px auto;
+    text-align: center;
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  }
+  input[type="text"],
+  button {
+    padding: 15px;
+    margin: 15px;
+    width: calc(100% - 40px);
+    border: 2px solid #007bff;
+    border-radius: 30px;
+    outline: none;
+    transition: all 0.3s ease;
+  }
+  button {
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+  }
+  button:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+  }
+  #roastOutput {
+    margin-top: 30px;
+    font-style: italic;
+    padding: 20px;
+    border: 2px solid #ccc;
+    border-radius: 15px;
+    background-color: #f8f9fa;
+    color: #444;
+  }
+  #errorMessage {
+    color: red;
+    display: none;
+    margin-top: 15px;
+  }
+  #nextFeedback {
+    display: none;
+    margin-top: 30px;
+    font-style: italic;
+  }
+  .chatButton {
+    display: inline-block;
+    padding: 15px 30px;
+    background-color: #007bff;
+    color: white;
+    text-decoration: none;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 30px;
+  }
+  .chatButton:hover {
+    background-color: #0056b3;
+  }
+  #matchInfo {
+    max-width: 90%;
+    margin: 30px auto;
+  }
+  #matchImage {
+    max-width: 100%;
+    height: auto;
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  }
+  #cameraInstruction {
+    font-size: 18px;
+    margin-top: 20px;
+    color: #777;
+  }
+  #warningMessage {
+    margin-top: 30px;
+    padding: 20px;
+    background-color: #ffcccc;
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  }
+  #warningMessage p {
+    color: #cc0000;
+    font-size: 18px;
+    font-weight: bold;
+    margin: 0;
+  }
+  #matchButton {
+    background-color: #00B95F;
+    border-radius: 30px;
+    padding: 15px 30px;
+    font-size: 18px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  #matchButton:hover {
+    background-color: #008c46;
+  }
+  
+  /* Media Queries */
+  @media only screen and (min-width: 768px) {
+    .container {
+      max-width: 600px;
+    }
+  }
+</style>
+</head>
+<body>
+<div class="container" id="musicContainer">
+  <h1 style="color: #007bff;">Have a Fun</h1>
+  <p>Do you want to continue visiting with music or without music?</p>
+  <button onclick="playMusic()">With Music</button>
+  <button onclick="showContent()">Without Music</button>
+</div>
+<div class="container" id="content" style="display: none;">
+  <h2 style="color: #007bff;">Welcome</h2>
+  <input type="text" id="inputName" placeholder="Enter your name">
+  <button onclick="generateRoast()">Generate Feedback</button>
+  <p id="roastOutput"></p>
+  <p id="errorMessage">Please enter a valid name. Let's keep it professional!</p>
+  <p id="nextFeedback">Want another feedback? Click the button again!</p>
+</div>
+<div id="matchInfo" class="container" style="display: none;">
+  <h2 style="color: #007bff;">Superhero Match</h2>
+  <p>We've analyzed your personality and found a superhero match!</p>
+  <button id="matchButton" onclick="showMatch()">Show My Match</button>
+  <img id="matchImage" alt="">
+  <p id="cameraInstruction"></p>
+</div>
+<div class="container" id="warningMessage" style="display: none;">
+  <p>कृपया इसे दिल और दिमाग में न लें अन्यथा यह आपके लिए हानिकारक होगा</p>
+</div>
+<script>
+  function showWarningMessage() {
+    document.getElementById('warningMessage').style.display = 'block';
+  }
+  function playMusic() {
+    const audio = new Audio('rinkiya.mp3'); // Replace 'music.mp3' with the path to your music file
+    audio.play();
+    document.getElementById('musicContainer').style.display = 'none'; // Hide music options
+    document.getElementById('content').style.display = 'block'; // Show content after music starts playing
+  }
+  function showContent() {
+    document.getElementById('musicContainer').style.display = 'none'; // Hide music options
+    document.getElementById('content').style.display = 'block'; // Show content without music
+  }
+  function updateVisitorCount() {
+    let visitorCount = localStorage.getItem('visitorCount');
+    if (visitorCount === null) {
+      visitorCount = 0;
+    } else {
+      visitorCount = parseInt(visitorCount);
+    }
+    visitorCount++;
+    localStorage.setItem('visitorCount', visitorCount);
+    return visitorCount;
+  }
+  const totalCount = updateVisitorCount();
+  let sno = parseInt(localStorage.getItem('sno')) || 0;
+  function generateRoast() {
+    sno++;
+    const inputName = document.getElementById('inputName').value.trim().toUpperCase();
+    const validName = "AKSHITA"; // Change to your desired valid name
+    if (!inputName || inputName !== validName) {
+      document.getElementById('errorMessage').style.display = 'block';
+      document.getElementById('roastOutput').innerText = '';
+      return;
+    }
+    const roasts = [
+    
+      `I'd roast you ${inputName}, but my mom said I'm not allowed to burn trash.`,
+     `I'd roast you ${inputName}, but my mom said I'm not allowed to burn trash.`, `Is your name Google? Because you have everything I've been searching for, except a personality.`, `Hey ${inputName}, were you born on a highway? Because that's where most accidents happen.`, `You know ${inputName}, if brains were dynamite, you wouldn't have enough to blow your nose.`, `I'd roast you ${inputName}, but I'm afraid it , but I'm already bored of you.`, `Are you a bank loan? Because you have a lot of interest in my affairs.`, `If your IQ was the temperature, off serious oxygen waste vibes.`, `You know ${inputName}, you're like a diploma – you may have a degree, but you're still useless.`, `I'd roast you ${inputName}, but I don't want to lower myself to your level.`, `Is your name Waldo? Because someone like you should be impossible to find.`, `If your personality was a movie, it would be a short film.`, `Hey ${inputName}, are you a door? Because you're always being pushed around.`, `You know ${inputName}, you're like a cup of coffee – bitter and best served in small doses.`, `I'd roast you ${inputName}, but it looks like life already did that for me.`, `Is your name Adobe? Because you need to update your flash player.`, `If stupidity were a crime, you'd be serving a life sentence, ${inputName}.`, `Hey ${inputName}, are you a dictionary? Because you add meaning to my life... by being completely useless.`, `You know ${inputName}, if I wanted to kill myself, I'd climb your ego and jump to your IQ.`, `I'd say you're a tool, ${inputName}, but that would imply you're useful in some way.`, `Is your name Instagram? Because you're full of yourself and nobody wants to hear from you.`, `If you were any less intelligent, you'd need watering twice a week, ${inputName}.`, `Hey ${inputName}, are you a keyboard? Because you're just my type... of problem.`, `You know ${inputName}, if ignorance is bliss, you must be the happiest person alive.`, `I'd roast you ${inputName}, but it seems you've already been burnt to a crisp.`, `Is your name AOL? Because you're outdated and nobody uses you anymore.`, `If you were any dumber, you'd need a water break to tie your own shoes, ${inputName}.`, `Hey ${inputName}, are you a remote control? Because you seem to have lost all connection with reality.`, `You know ${inputName}, you're like a broken record – annoying and repetitive.`, `I'd roast you ${inputName}, but I don't want to be accused of causing a public health crisis.`, `Is your name Windows? Because you have a lot of bugs and you're constantly crashing.`, `If ignorance was a superpower, you'd be a superhero, ${inputName}.`, `Hey ${inputName}, are you a parking ticket? Because you've got "fine" written all over you.`, `You know ${inputName}, you're like a penny – worthless and nobody wants you.`, `I'd roast you ${inputName}, but I don't want to be responsible for causing a mass exodus of brain cells.`, `Is your name Twitter? Because you're full of pointless tweets and nobody cares what you have to say.`, `If stupidity was a currency, you'd be a billionaire, ${inputName}.`, `Hey ${inputName}, are you a lottery ticket? Because you're a waste of money and never pay off.`, `You know ${inputName}, you're like a bad dream – I can't wait to wake up and forget about you.`, `I'd roast you ${inputName}, but I don't want to add to the pollution in the air.`, `Is your name iPhone? Because you're overpriced and underwhelming.`, `If you were any less useful, you'd be a screen door on a submarine, ${inputName}.`, `Hey ${inputName}, are you a fire alarm? Because you're really loud and annoying.`, `You know ${inputName}, you're like a broken clock – right twice a day, but useless the rest of the time.`, `I'd roast you ${inputName}, but I don't want to waste my time on someone who's not worth it.`, `Is your name Amazon? Because you're constantly delivering disappointment.`, `If ignorance was bliss, you'd be the happiest person on the planet, ${inputName}.`, `Hey ${inputName}, are you a mirror? Because every time I look at you, I see a reflection of disappointment.`, `You know ${inputName}, you're like a bad movie – nobody wants to watch you, but you keep playing anyway.`, `I'd roast you ${inputName}, but I don't want to waste my time on someone who's not worth it.`, `Is your name Instagram? Because you're full of yourself and nobody wants to hear from you.`, `If ignorance was a superpower, you'd be a superhero, ${inputName}.`, `Hey ${inputName}, are you a parking ticket? Because you've got "fine" written all over you.`, `You know ${inputName}, you're like a penny – worthless and nobody wants you.`, `I'd roast you ${inputName}, but I don't want to be responsible for causing a mass exodus of brain cells.`, `Is your name Twitter? Because you're full of pointless tweets and nobody cares what you have to say.`, `If stupidity was a currency, you'd be a billionaire, ${inputName}.`, `Hey ${inputName}, are you a lottery ticket? Because` 
+      // Add more roasts as needed
+    ];
+    const randomRoast = roasts[Math.floor(Math.random() * roasts.length)];
+    document.getElementById('errorMessage').style.display = 'none';
+    document.getElementById('roastOutput').innerText = randomRoast;
+    document.getElementById('nextFeedback').style.display = 'block'; // Show the analysis section after generating the roast
+    document.getElementById('matchInfo').style.display = 'block';
+  }
+  function showMatch() {
+    const matchImageSrc = "monkey.jpg";
+    document.getElementById('matchImage').style.display = 'block';
+    document.getElementById('cameraInstruction').style.display = 'block';
+    document.getElementById('matchImage').src = matchImageSrc;
+    document.getElementById('cameraInstruction').innerText = 'Please place your face in front of the camera.';
+    setTimeout(function() {
+        // Update the image source to the monkey image
+        
+        document.getElementById('cameraInstruction').innerText = 'Please wait...';
+    }, 7000); // Delay setting the image source by 1 second (1000 milliseconds)
+    setTimeout(function() {
+        document.getElementById('cameraInstruction').innerText = 'Ohh! Sorry, she is more beautiful than you.';
+        showWarningMessage(); // Show the warning message after 6 seconds
+        addChatButton();
+    }, 8000);
+}
+
+  function addChatButton() {
+    var matchInfoContainer = document.getElementById('matchInfo');
+    var chatButton = document.createElement('a');
+    chatButton.textContent = 'Click Here for Chatting with Admin';
+    chatButton.href = 'chat.html'; // Change this to the URL of your chat page
+    chatButton.className = 'chatButton';
+    matchInfoContainer.appendChild(chatButton); } </script> </body> </html>
+
