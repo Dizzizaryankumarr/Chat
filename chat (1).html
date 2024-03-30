@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat App</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+        }
+
+        .container h2 {
+            text-align: center;
+            color: #007bff;
+            margin-bottom: 20px;
+        }
+
+        #chat-box {
+            height: 300px;
+            overflow-y: scroll;
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+        }
+
+        .message {
+            margin-bottom: 5px;
+            padding: 10px;
+            border-radius: 10px;
+            background-color: #f2f2f2;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .user-name-form {
+            text-align: center;
+            margin-bottom: 20px;
+            
+        }
+
+        input[type="text"] {
+            width: calc(100% - 75px);
+            padding: 10px;
+            margin-right: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            outline: none;
+            margin-bottom: 10px; /* Add margin-bottom */
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container" id="chat-container" style="display: none;">
+        <h2>Let's Chat!</h2>
+        <div id="chat-box"></div>
+        <div style="display: flex; align-items: center;">
+            <input type="text" id="message-input" placeholder="Type your message...">
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+    <div class="container" id="name-form-container">
+        <h2>Welcome to the Chat App</h2>
+        <form id="name-form" class="user-name-form">
+            <label for="name" style="font-size: 18px; margin-bottom: 10px;">Please enter your name:</label><br>
+            <input type="text" id="name" name="name" required style="font-size: 16px;">
+            <button type="submit" style="font-size: 16px;">Start Chatting</button>
+        </form>
+    </div>
+    <script>
+        window.onload = function () {
+            loadChatHistory();
+            document.getElementById("name-form").addEventListener("submit", function (event) {
+                event.preventDefault();
+                var nameInput = document.getElementById("name");
+                var userName = nameInput.value.trim();
+                if (userName !== "") {
+                    localStorage.setItem("userName", userName);
+                    document.getElementById("chat-container").style.display = "block";
+                    document.getElementById("name-form-container").style.display = "none";
+                }
+            });
+            askForName();
+        };
+
+        function loadChatHistory() {
+            var chatBox = document.getElementById("chat-box");
+            var chatHistory = localStorage.getItem("chatHistory");
+            if (chatHistory) {
+                chatBox.innerHTML = chatHistory;
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }
+        }
+
+        function askForName() {
+            var userName = localStorage.getItem("userName");
+            if (userName) {
+                document.getElementById("chat-container").style.display = "block";
+                document.getElementById("name-form-container").style.display = "none";
+            }
+        }
+
+        function sendMessage() {
+            var userName = localStorage.getItem("userName");
+            if (!userName) {
+                askForName();
+                return;
+            }
+            var messageInput = document.getElementById("message-input");
+            var message = messageInput.value;
+            if (message.trim() !== "") {
+                var chatBox = document.getElementById("chat-box");
+                var messageElement = document.createElement("div");
+                messageElement.textContent = userName + ": " + message;
+                messageElement.classList.add("message");
+                chatBox.appendChild(messageElement);
+                messageInput.value = "";
+                chatBox.scrollTop = chatBox.scrollHeight;
+                localStorage.setItem("chatHistory", chatBox.innerHTML);
+            }
+        }
+    </script>
+</body>
+
+</html>
